@@ -1,29 +1,27 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+name: Scam Wallet
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-import "./IERC20.sol";
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-contract SimpleWallet {
-    address public owner;
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+      - name: Install dependencies
+        run: npm install
 
-    constructor() {
-        owner = msg.sender;
-    }
+      - name: Run tests
+        run: npm test
 
-    function transfer(address _token, address _to, uint256 _value) external {
-        require(msg.sender == owner, "Only owner can transfer tokens");
-        
-        IERC20 token = IERC20(_token);
-        require(token.transfer(_to, _value), "Transfer failed");
-
-        emit Transfer(address(this), _to, _value);
-    }
-}
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
-interface IERC20 {
-    function transfer(address to, uint256 value) external returns (bool);
-}
