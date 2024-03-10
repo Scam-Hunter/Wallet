@@ -25,3 +25,28 @@ jobs:
       - name: Run tests
         run: npm test
 
+        // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "./IERC20.sol";
+
+contract SimpleWallet {
+    address public owner;
+
+    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function transfer(address _token, address _to, uint256 _value) external {
+        require(msg.sender == owner, "Only owner can transfer tokens");
+        
+        IERC20 token = IERC20(_token);
+        require(token.transfer(_to, _value), "Transfer failed");
+
+        emit Transfer(address(this), _to, _value);
+    }
+}
+
+
